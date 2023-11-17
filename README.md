@@ -16,7 +16,7 @@ OR
 <br>
 <br>
 git commit -m "Your commit message here"  # Commit with a message from the command line <br>
-git push master         # Push changes to the remote repository (optional) <br>
+git push origin master         # Push changes to the remote repository (optional) <br>
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio 2021.2 (codename Chipmunk) or later.
