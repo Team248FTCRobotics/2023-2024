@@ -5,17 +5,18 @@ This repository contains the Team 248 FTC SDK for the CENTERSTAGE (2023-2024) co
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
-## How to push new changes in Android Studio:
-Go to View -> Tool Windows -> Terminal
-Enter the following:
-git status        # Check the status of your working directory
-git add .         # Stage all changes (or specify files to stage)
-git commit        # Open text editor to write a commit message
-
+## How to push new changes in Android Studio: <br>
+Go to View -> Tool Windows -> Terminal <br>
+Enter the following: <br>
+git status        # Check the status of your working directory <br>
+git add .         # Stage all changes (or specify files to stage) <br>
+git commit        # Open text editor to write a commit message <br>
+<br>
 OR
-
-git commit -m "Your commit message here"  # Commit with a message from the command line
-git push master         # Push changes to the remote repository (optional)
+<br>
+<br>
+git commit -m "Your commit message here"  # Commit with a message from the command line <br>
+git push master         # Push changes to the remote repository (optional) <br>
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio 2021.2 (codename Chipmunk) or later.
