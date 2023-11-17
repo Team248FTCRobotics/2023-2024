@@ -19,7 +19,7 @@ git commit -m "Your commit message here"  # Commit with a message from the comma
 git push origin master         # Push changes to the remote repository (optional) <br>
 
 ## Requirements
-To use this Android Studio project, you will need Android Studio 2021.2 (codename Chipmunk) or later.
+To use this Android Studio project, you will need Android Studio 2021.3.1 (codename Dolphin) or later.
 
 To program your robot in Blocks or OnBot Java, you do not need Android Studio.
 
