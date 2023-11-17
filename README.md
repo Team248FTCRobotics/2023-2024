@@ -21,8 +21,6 @@ git push origin master         # Push changes to the remote repository (optional
 ## Requirements
 To use this Android Studio project, you will need Android Studio 2021.3.1 (codename Dolphin) or later.
 
-To program your robot in Blocks or OnBot Java, you do not need Android Studio.
-
 ## Getting Started
 If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html) to get familiar with how to use the control system:
 
