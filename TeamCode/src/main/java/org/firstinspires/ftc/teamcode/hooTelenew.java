@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-@TeleOp(name="hooTele", group="Linear Opmode")
+@TeleOp(name="hooTelenew", group="Linear Opmode")
 //@Disabled
-public class hooTele extends LinearOpMode {
+public class hooTelenew extends LinearOpMode {
 
     boolean armStay = false;
 
@@ -25,10 +24,7 @@ public class hooTele extends LinearOpMode {
     DcMotor rightRear = null;
 
     //gp2 declarations
-    DcMotor leftArm = null;
-    DcMotor rightArm= null;
-    private Servo agarro; //gripper
-    DcMotor intakeMotor = null;
+
 
     // motor speed variables
     double J; double P; double G; double R;
@@ -61,18 +57,8 @@ public class hooTele extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-       // leftArm = hardwareMap.dcMotor.get("lefty");
-        //rightArm = hardwareMap.dcMotor.get("righty");
 
-      //  intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
 
-        leftArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArm.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-     //   intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);  // Set the correct direction based on your robot's configuration
-    //    intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        agarro = hardwareMap.servo.get("agarro");
 
         // wait for the game to start
         waitForStart();
@@ -133,9 +119,7 @@ public class hooTele extends LinearOpMode {
             leftRear.setPower(G);
             rightRear.setPower(R);
 
-            //Set intake power
-            double intakePower = gamepad1.left_trigger - gamepad1.right_trigger;  // Use triggers for intake control
-            intakeMotor.setPower(intakePower);
+
 
             // send some useful parameters to the driver station
             // (outputting the current wheel speed)
@@ -143,61 +127,19 @@ public class hooTele extends LinearOpMode {
             telemetry.addData("RF", "%.3f", P);
             telemetry.addData("LR", "%.3f", G);
             telemetry.addData("RR", "%.3f", R);
-            telemetry.addData("Left Arm Position", "%7d", leftArm.getCurrentPosition());
-            telemetry.addData("Right Arm Position", "%7d", rightArm.getCurrentPosition());
-            telemetry.addData("Intake Power", "%.2f", intakePower);
+
             telemetry.update();
 
 
             //gamepad 2 controls (gunner)
 
 
-            if (gamepad2.dpad_up) { //for stringing the arm
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-            }
 
 
-            if (gamepad2.a) { //close grip
-                agarro.setPosition(0.8);
-            }
-            if (gamepad2.x) { //open grip
-                agarro.setPosition(.3);
-            }
 
-            if (gamepad2.left_stick_y>0) {
-                leftArm.setPower(-1);
-                rightArm.setPower(-1);
-            }
-            else if (gamepad2.left_stick_y<0) {
-                leftArm.setPower(1);
-                rightArm.setPower(1);
-            }
-            else if(gamepad2.y) {
-                if(armStay) {
-                    armStay = true;
-                }
-                else if(!armStay) {
-                    armStay = false;
-                }
-            }
-            else if(armStay) {
-                leftArm.setPower(0.1);
-                rightArm.setPower(0.1);
-            }
-            else if (gamepad2.right_stick_y > 0) {
-                leftArm.setPower(-.4);
-                rightArm.setPower(-.4);
-            }
-            else if (gamepad2.right_stick_y < 0) {
-                leftArm.setPower(.4);
-                rightArm.setPower(.4);
-            }
 
-            else {
-                leftArm.setPower(.05);
-                rightArm.setPower(.05);
-            }
+
+
 
         }
 

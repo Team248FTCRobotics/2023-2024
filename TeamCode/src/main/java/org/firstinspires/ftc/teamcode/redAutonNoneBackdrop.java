@@ -101,7 +101,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
 //@Disabled
-public class hooAuton extends LinearOpMode {
+public class redAutonNoneBackdrop extends LinearOpMode {
 
 
     /* Initialize motors as variables.... */
@@ -132,7 +132,7 @@ public class hooAuton extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
+    static final double     DRIVE_SPEED             = 0.3;
     static final double     TURN_SPEED              = 0.5;
 
     //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
@@ -216,38 +216,21 @@ public class hooAuton extends LinearOpMode {
 
 
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
+        //ARM IS FACING INWARD TOWARDS PROP LINE
 
+        //Drive Foward 12 inches
+        encoderDrive(DRIVE_SPEED, 12, 12, 5.0 );
 
-
-
-
-
-        /*The Ryan Hoo Examples... >:(   :    */
-
-
-
-
-        //----------GET PROP POSITION TEST (JUST RUN HOOSENSING TO TEST BUT THIS IS HOW U ADD IT IN THE AUTON)
-        //initializes prop position as a variable if robot is lined up properly with the 3 lines
-        //to make sure robot is lined up properly make sure robot has full view of all 3 lines with the camera
-        /*
+        //Sense Prop Position
         hooSensing.SkystoneDeterminationPipeline.SkystonePosition skystonePosition = getSkystonePosition();
         telemetry.addData("Skystone Position", skystonePosition);
         telemetry.update();
-        */
 
-
-        //----------DO SOMETHING WITH PROP POSITION TEST
-        /*
-        //Condition statement based on where the prop is, should be pretty obvious how it works if u speak english (skystone = prop)
+        //Place Pixel on same Line as Prop
         switch (skystonePosition) {
             case LEFT:
-                //EXAMPLE CODE, MAY BE DANGEROUS TO RUN
-
-                encoderDrive(TURN_SPEED, 12, -12, 4.0);  // Turn right to align with the Skystone
-                sleep(1000);
-                encoderDrive(DRIVE_SPEED, 12, 12, 5.0);  // Move forward to the Skystone
-                sleep(1000);
+                //Turn Left
+                encoderDrive(TURN_SPEED, -12, 12, 4.0);
 
                 // Code to lower the arm and open the gripper
                 lowerLeftArm(1.0, 1.0); // (double power, double time)
@@ -259,79 +242,74 @@ public class hooAuton extends LinearOpMode {
                 closeGripper();
                 sleep(1000);
 
-                break;
+                //Turn Back Right
+                encoderDrive(TURN_SPEED, 12, -12, 4.0);
 
+                break;
             case CENTER:
-                //write code here to do if prop is on center line
-                break;
+                //Move Foward 2 inches
+                encoderDrive(DRIVE_SPEED, 2, 2, 5.0);
 
-            case RIGHT:
-                //write code here to do if prop is on center line
+                // Code to lower the arm and open the gripper
+                lowerLeftArm(1.0, 1.0); // (double power, double time)
+                openGripper();
+                sleep(1000);
+
+                // Code to raise the arm and close the gripper
+                raiseLeftArm(1.0, 1.0); // (double power, double time))
+                closeGripper();
+                sleep(1000);
+
+                //Move Back 2 inches
+                encoderDrive(DRIVE_SPEED, -2, -2, 5.0);
+
                 break;
-        //Break statements to continue code
+            case RIGHT:
+                //Turn Right
+                encoderDrive(TURN_SPEED, 12, -12, 4.0);
+
+                // Code to lower the arm and open the gripper
+                lowerLeftArm(1.0, 1.0); // (double power, double time)
+                openGripper();
+                sleep(1000);
+
+                // Code to raise the arm and close the gripper
+                raiseLeftArm(1.0, 1.0); // (double power, double time))
+                closeGripper();
+                sleep(1000);
+
+                //Turn Back Left
+                encoderDrive(TURN_SPEED, -12, 12, 4.0);
+
+                break;
         }
 
-        //Sleep just in case...
-        sleep(500);
-        */
+        //Drive Backward 8 inches (To not collide with lines)
+        encoderDrive(DRIVE_SPEED, -8, -8, 5.0);
+
+        //Turn Right
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+
+        //Drive Foward 12 Inches
+        encoderDrive(DRIVE_SPEED, 12, 12, 3.0);
+
+        // Turn Left
+        encoderDrive(TURN_SPEED, -12, 12, 4.0);
+
+        //Drive Foward 6 Inches
+        encoderDrive(DRIVE_SPEED, 6, 6, 5.0);
+
+        //Turn Right
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+
+        //Drive Foward 12 Inches
+        encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
+
+        //REACHED BACKDROP--
 
 
-        //----------DRIVE FOWARD/BACKWARD/TURN TEST
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        //* -timeout is the maximum amount of time for the robot to reach the position (NOT THE SAME AS SLEEP cuz timeout is a condition variable) -Ryan hoo
-        encoderDrive(DRIVE_SPEED,  12,  12, 5.0);  // S1: Forward 12 Inches with 5 Sec timeout
-        sleep(1000);
-        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //sleep(1000);
-        encoderDrive(DRIVE_SPEED, -8, -8, 4.0);  // S3: Reverse 8 Inches with 4 Sec timeout
-        sleep(1000);
-        encoderDrive(TURN_SPEED,   -12, 12, 4.0);  // S2: Turn Left 12 Inches with 4 Sec timeout
-        sleep(1000);
 
-
-        //----------SKIRT TEST
-        /*
-        skirtLeft(10.0, DRIVE_SPEED);
-        sleep(1000);
-        skirtRight(10.0, DRIVE_SPEED );
-        */
-
-
-        //----------INTAKE TEST
-        /*
-        startIntake();
-        sleep(2000);
-        stopIntake();
-         */
-
-
-        //----------ARM AND GRIPPER TEST
-        //my arm stuff that may not work make sure to adjust arguments/parameters - ryan hoo!!!
-        //IF U DONT KNOW HOW TO ADJUST THE PARAMETERS -- LOOK IN THE TELE OP IF THE PARAMETERS I ORIGINALLY SET DOESNT WORK
-        /*
-        closeGripper();
-        sleep(1000);
-        raiseLeftArm(1.0, 1.0); //(double power, double time)
-        raiseRightArm(1.0, 1.0); //(double power, double time)
-        sleep(1000);
-        openGripper();
-        sleep(1000);
-        closeGripper();
-        sleep(1000);
-        lowerLeftArm(1.0, 1.0); //(double power, double time)
-        lowerRightArm(1.0, 1.0); //(double power, double time)
-        */
-
-
-        //Update telemetry to let driver hub know autonomous is finished
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
     }
-
-
-
-
 
 
     //END OF AUTONOMOUS-----------------------------------------------------------------------------
@@ -414,7 +392,7 @@ public class hooAuton extends LinearOpMode {
             leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);   // optional pause after each move.
+            sleep(1000);   // optional pause after each move.
         }
     }
 
