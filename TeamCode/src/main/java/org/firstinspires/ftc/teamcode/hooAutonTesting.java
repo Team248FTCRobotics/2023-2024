@@ -103,6 +103,7 @@ public class hooAutonTesting extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.3;
     static final double     TURN_SPEED              = 0.5;
+    static final double     SKIRT_SPEED             = 0.2;
 
     //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
 
@@ -260,9 +261,9 @@ public class hooAutonTesting extends LinearOpMode {
 
         //----------SKIRT TEST
         /*
-        skirtLeft(10.0, DRIVE_SPEED);
+        skirtLeft(10.0, SKIRT_SPEED);
         sleep(1000);
-        skirtRight(10.0, DRIVE_SPEED );
+        skirtRight(10.0, SKIRT_SPEED );
         */
 
 

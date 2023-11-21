@@ -30,15 +30,24 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.hooSensing.SkystoneDeterminationPipeline.SkystonePosition;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //hi guys ryan hoo here please read all the comments !!!!!
@@ -125,6 +134,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.3;
     static final double     TURN_SPEED              = 0.5;
+    static final double     SKIRT_SPEED             = 0.2;
 
     //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
 
@@ -207,7 +217,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
 
 
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
-        //ARM IS FACING INWARD TOWARDS PROP LINE
+        //ROBOT IS FACING INWARD TOWARDS PROP LINE
+
+        //Close Gripper
+        closeGripper();
 
         //Drive Foward 12 inches
         encoderDrive(DRIVE_SPEED, 12, 12, 5.0 );
@@ -217,63 +230,87 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         telemetry.addData("Skystone Position", skystonePosition);
         telemetry.update();
 
+        //Drive Backward 6 inches to rotate robot
+        encoderDrive(DRIVE_SPEED, -6, -6, 5.0 );
+
+        //Turn right twice to rotate robot
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+
+
         //Place Pixel on same Line as Prop
         switch (skystonePosition) {
             case LEFT:
-                //Turn Left
-                encoderDrive(TURN_SPEED, -12, 12, 4.0);
+                //Skirt Left
+                skirtLeft(3, 0.3);
 
-                // Code to lower the arm and open the gripper
-                lowerLeftArm(1.0, 1.0); // (double power, double time)
+                //Raise Both Arms
+                raiseLeftArm(1.0, 2.5);
+                raiseRightArm(1.0, 2.5);
+
+                //Open Gripper
                 openGripper();
-                sleep(1000);
 
-                // Code to raise the arm and close the gripper
-                raiseLeftArm(1.0, 1.0); // (double power, double time))
+                //Close Gripper
                 closeGripper();
-                sleep(1000);
 
-                //Turn Back Right
-                encoderDrive(TURN_SPEED, 12, -12, 4.0);
+                //Lower Both Arms
+                lowerLeftArm(1.0, 2.5);
+                lowerRightArm(1.0, 2.5);
+
+                //Skirt back to original position
+                skirtRight(3, 0.3);
 
                 break;
             case CENTER:
-                //Move Foward 2 inches
-                encoderDrive(DRIVE_SPEED, 2, 2, 5.0);
+                //Move Foward 5 inches
+                encoderDrive(DRIVE_SPEED, 5, 5, 5.0);
 
-                // Code to lower the arm and open the gripper
-                lowerLeftArm(1.0, 1.0); // (double power, double time)
+                //Raise Both Arms
+                raiseLeftArm(1.0, 2.5);
+                raiseRightArm(1.0, 2.5);
+
+                //Open Gripper
                 openGripper();
-                sleep(1000);
 
-                // Code to raise the arm and close the gripper
-                raiseLeftArm(1.0, 1.0); // (double power, double time))
+                //Close Gripper
                 closeGripper();
-                sleep(1000);
 
-                //Move Back 2 inches
-                encoderDrive(DRIVE_SPEED, -2, -2, 5.0);
+                //Lower Both Arms
+                lowerLeftArm(1.0, 2.5);
+                lowerRightArm(1.0, 2.5);
+
+                //Move Back to original position
+                encoderDrive(DRIVE_SPEED, -5, -5, 5.0);
 
                 break;
             case RIGHT:
-                //Turn Right
-                encoderDrive(TURN_SPEED, 12, -12, 4.0);
+                //Skirt Right
+                skirtRight(3, 0.3);
 
-                // Code to lower the arm and open the gripper
-                lowerLeftArm(1.0, 1.0); // (double power, double time)
+                //Raise Both Arms
+                raiseLeftArm(1.0, 2.5);
+                raiseRightArm(1.0, 2.5);
+
+                //Open Gripper
                 openGripper();
-                sleep(1000);
 
-                // Code to raise the arm and close the gripper
-                raiseLeftArm(1.0, 1.0); // (double power, double time))
+                //Close Gripper
                 closeGripper();
-                sleep(1000);
 
-                //Turn Back Left
-                encoderDrive(TURN_SPEED, -12, 12, 4.0);
+                //Lower Both Arms
+                lowerLeftArm(1.0, 2.5);
+                lowerRightArm(1.0, 2.5);
+
+                //Skirt back to original position
+                skirtLeft(3, 0.3);
 
                 break;
         }
+
+        //Turn right twice to rotate robot
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
 
         //Drive Backward 8 inches (To not collide with lines)
         encoderDrive(DRIVE_SPEED, -8, -8, 5.0);
@@ -297,7 +334,6 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
 
         //REACHED BACKDROP--
-
 
 
 
@@ -384,7 +420,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
             leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);   // optional pause after each move.
+            sleep(1000);   // optional pause after each move.
         }
     }
 
@@ -414,6 +450,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         leftArm.setPower(0);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         */
+        sleep(1000);
     }
 
     //Hmm i wonder wat this does
@@ -435,6 +472,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         leftArm.setPower(0);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         */
+        sleep(1000);
     }
 
     //Hmm i wonder wat this does
@@ -456,6 +494,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightArm.setPower(0);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         */
+        sleep(1000);
     }
 
     //Hmm i wonder wat this does
@@ -478,7 +517,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightArm.setPower(0);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         */
-
+        sleep(1000);
     }
 
     //move robot right without turning with encoder
@@ -530,6 +569,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sleep(1000);
     }
 
     //move robot left without turning with encoder
@@ -581,15 +621,18 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sleep(1000);
     }
 
     //Hmm i wonder wat this does
     private void openGripper(){
         gripper.setPosition(0);
+        sleep(1000);
     }
 
     private void closeGripper() {
         gripper.setPosition(1);
+        sleep(1000);
     } //0.13
 
     /*
