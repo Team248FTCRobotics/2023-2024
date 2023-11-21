@@ -9,14 +9,11 @@ This GitHub repository contains the source code that is used to build an Android
 Go to View -> Tool Windows -> Terminal <br>
 Enter the following: <br>
 git status        # Check the status of your working directory <br>
+git pull          # Pull the branch <br>
 git add .         # Stage all changes (or specify files to stage) <br>
-git commit        # Open text editor to write a commit message <br>
-<br>
-OR
-<br>
-<br>
-git commit -m "Your commit message here"  # Commit with a message from the command line <br>
-git push origin master         # Push changes to the remote repository (optional) <br>
+git commit -m "message here"        # Commit current file with commit message <br>
+git push          # Push code to Github <br>
+
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio 2021.3.1 (codename Dolphin) or later.
