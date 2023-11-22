@@ -99,8 +99,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 //Fix any other errors. NOTE: WHEN INSPECTING PROJECT ERRORS, IGNORE THE 2 ANDROID ERRORS
 
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
-//@Disabled
+@Autonomous(name="blueAutonBackdrop", group="Robot")
+@Disabled
 public class blueAutonBackdrop extends LinearOpMode {
 
 

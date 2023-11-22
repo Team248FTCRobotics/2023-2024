@@ -68,7 +68,7 @@ redAutonNoneBackdrop is Bottom Right
 //Test all the functions.
 
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
+@Autonomous(name="hooAutonTesting", group="Robot")
 //@Disabled
 public class hooAutonTesting extends LinearOpMode {
 
@@ -78,16 +78,20 @@ public class hooAutonTesting extends LinearOpMode {
     private DcMotor         rightFront  = null;
     private DcMotor         leftRear    = null;
     private DcMotor         rightRear   = null;
+    /*
     private DcMotor         leftArm     = null;
     private DcMotor         rightArm    = null;
     private Servo           gripper     = null;
     //private DcMotor         intakeMotor = null;
+    */
+
 
     /* Other variables to initialize... */
     private ElapsedTime     runtime = new ElapsedTime();
+    /*
     OpenCvInternalCamera theWebcam;
     hooSensing.SkystoneDeterminationPipeline pipeline;
-
+    */
 
     /*Variables based on robot parts, adjust whenever a part is changed */
     // Calculate the COUNTS_PER_INCH for your specific drive train.
@@ -96,14 +100,14 @@ public class hooAutonTesting extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: Yellow Jacket 435 RPM Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: Yellow Jacket 435 RPM Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing. //13.71 with gearing on 435 RPM YJ Encoder
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.3;
-    static final double     TURN_SPEED              = 0.5;
-    static final double     SKIRT_SPEED             = 0.2;
+    static final double     DRIVE_SPEED             = 1.0;
+   // static final double     TURN_SPEED              = 0.5;
+    // static final double     SKIRT_SPEED             = 0.2;
 
     //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
 
@@ -118,21 +122,23 @@ public class hooAutonTesting extends LinearOpMode {
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
         //Arm and Gripper
-        leftArm = hardwareMap.get(DcMotor.class, "leftArm");
-        rightArm = hardwareMap.get(DcMotor.class, "rightArm");
-        gripper = hardwareMap.get(Servo.class, "gripper");
+
+        //leftArm = hardwareMap.get(DcMotor.class, "leftArm");
+        //rightArm = hardwareMap.get(DcMotor.class, "rightArm");
+        //gripper = hardwareMap.get(Servo.class, "gripper");
 
         //Intake Motor
         //intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
         //Camera
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        theWebcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new hooSensing.SkystoneDeterminationPipeline();
-        theWebcam.setPipeline(pipeline);
-        theWebcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        theWebcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //theWebcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        //pipeline = new hooSensing.SkystoneDeterminationPipeline();
+        //theWebcam.setPipeline(pipeline);
+        //theWebcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        //theWebcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
 
+        /*
             @Override
             public void onOpened() {
                 theWebcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT); //upright, change for dif camera orientation
@@ -146,7 +152,9 @@ public class hooAutonTesting extends LinearOpMode {
                 telemetry.update();
 
             }
-        });
+
+         */
+        //});
 
         /*Setting Directions for movement based on encoders*/
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -253,7 +261,7 @@ public class hooAutonTesting extends LinearOpMode {
         //----------DRIVE FOWARD/BACKWARD/TURN TEST
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         //* -timeout is the maximum amount of time for the robot to reach the position (NOT THE SAME AS SLEEP cuz timeout is a condition variable) -Ryan hoo
-        encoderDrive(DRIVE_SPEED,  24,  24, 5.0);  // S1: Forward 12 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  30.48,  30.48, 10.0);  // S1: Forward 12 Inches with 5 Sec timeout
         sleep(1000);
         //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //sleep(1000);
@@ -389,12 +397,13 @@ public class hooAutonTesting extends LinearOpMode {
     }
 
     //function to get position of prop, uses .getAnalysis() in hooSensing
-    private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
+  //  private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
         // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
-        return pipeline.getAnalysis();
-    }
+    //    return pipeline.getAnalysis();
+   // }
 
     //Hmm i wonder wat this does
+    /*
     private void raiseLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         leftArm.setPower(power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -402,7 +411,7 @@ public class hooAutonTesting extends LinearOpMode {
             // Wait for the specified duration
         }
         leftArm.setPower(0);      // Stop the motor
-
+    */
         //with encoders:
         /*
         leftArm.setTargetPosition(targetPosition);
@@ -413,10 +422,11 @@ public class hooAutonTesting extends LinearOpMode {
         }
         leftArm.setPower(0);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-    }
 
+    }
+*/
     //Hmm i wonder wat this does
+  /*
     private void lowerLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         leftArm.setPower(-power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -434,10 +444,11 @@ public class hooAutonTesting extends LinearOpMode {
         }
         leftArm.setPower(0);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-    }
 
+    }
+*/
     //Hmm i wonder wat this does
+  /*
     private void raiseRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -455,10 +466,11 @@ public class hooAutonTesting extends LinearOpMode {
         }
         rightArm.setPower(0);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-    }
 
+    }
+*/
     //Hmm i wonder wat this does
+  /*
     private void lowerRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(-power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -468,7 +480,7 @@ public class hooAutonTesting extends LinearOpMode {
         rightArm.setPower(0);      // Stop the motor
 
         //with encoders:
-        /*
+
         rightArm.setTargetPosition(targetPosition);
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightArm.setPower(-power);
@@ -477,11 +489,12 @@ public class hooAutonTesting extends LinearOpMode {
         }
         rightArm.setPower(0);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
+
 
     }
 
     //move robot right without turning with encoder
+
     public void skirtRight(double distance, double power) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
@@ -584,15 +597,15 @@ public class hooAutonTesting extends LinearOpMode {
     }
 
     //Hmm i wonder wat this does
-    private void openGripper(){
-        gripper.setPosition(0);
-    }
+   //  private void openGripper(){
+      //  gripper.setPosition(0);
+    //}
 
-    private void closeGripper() {
-        gripper.setPosition(1);
-    } //0.13
+    //private void closeGripper() {
+      //  gripper.setPosition(1);
+    //} //0.13
 
-    /*
+
     //Method to start intake motor
     private void startIntake() {
         intakeMotor.setPower(1.0);
@@ -602,7 +615,5 @@ public class hooAutonTesting extends LinearOpMode {
     private void stopIntake() {
         intakeMotor.setPower(0.0);
     }
-    */
-
-
+*/
 }

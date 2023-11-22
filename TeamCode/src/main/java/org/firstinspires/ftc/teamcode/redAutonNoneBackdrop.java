@@ -99,8 +99,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 //Fix any other errors. NOTE: WHEN INSPECTING PROJECT ERRORS, IGNORE THE 2 ANDROID ERRORS
 
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
-//@Disabled
+@Autonomous(name="redAutonNoneBackdrop", group="Robot")
+@Disabled
 public class redAutonNoneBackdrop extends LinearOpMode {
 
 
@@ -219,6 +219,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
         //ROBOT IS FACING INWARD TOWARDS PROP LINE
 
+        /*
         //Close Gripper
         closeGripper();
 
@@ -330,6 +331,8 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         //Turn Right
         encoderDrive(TURN_SPEED, 12, -12, 4.0);
 
+
+        */
         //Drive Foward 12 Inches
         encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
 
