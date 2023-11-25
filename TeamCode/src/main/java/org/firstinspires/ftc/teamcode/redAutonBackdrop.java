@@ -75,28 +75,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //-----------Other information
 //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//if you do not read the comments i will come for you - RYLAN CHINTADA
 // MEASUREMENTS ARE IN INCHES
-
-
-//-----------Stuff to do:
-//Check the static final double variables based on the robot parts.
-//Check setPosition() arguments/parameters at end of autonomous.
-//Check drive speed and turn speed.
-//Check all functions.
-//Code the autonoumous for the field, don't guess the position-- calculate it (144x144 inch field)
-//Fix any other errors. NOTE: WHEN INSPECTING PROJECT ERRORS, IGNORE THE 2 ANDROID ERRORS
 
 
 @Autonomous(name="redAutonBackdrop", group="Robot")
@@ -109,6 +88,7 @@ public class redAutonBackdrop extends LinearOpMode {
     private DcMotor         rightFront  = null;
     private DcMotor         leftRear    = null;
     private DcMotor         rightRear   = null;
+
     private DcMotor         leftArm     = null;
     private DcMotor         rightArm    = null;
     private Servo           gripper     = null;
@@ -136,8 +116,6 @@ public class redAutonBackdrop extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;
     static final double     SKIRT_SPEED             = 0.2;
 
-    //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-
     @Override
     public void runOpMode() {
 
@@ -149,6 +127,7 @@ public class redAutonBackdrop extends LinearOpMode {
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
         //Arm and Gripper
+
         leftArm = hardwareMap.get(DcMotor.class, "leftArm");
         rightArm = hardwareMap.get(DcMotor.class, "rightArm");
         gripper = hardwareMap.get(Servo.class, "gripper");
@@ -193,8 +172,8 @@ public class redAutonBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Uncomment when testing arms
-        //rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Uncomment when testing arms
+        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -425,6 +404,7 @@ public class redAutonBackdrop extends LinearOpMode {
     }
 
     //function to get position of prop, uses .getAnalysis() in hooSensing
+
     private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
         // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
         return pipeline.getAnalysis();
@@ -442,7 +422,7 @@ public class redAutonBackdrop extends LinearOpMode {
         //with encoders:
         /*
         leftArm.setTargetPosition(targetPosition);
-        lefttArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftArm.setPower(power);
         while (opModeisActive() && rightArm.isBusy()) {
             // Wait for the arm to reach the target position
@@ -452,6 +432,8 @@ public class redAutonBackdrop extends LinearOpMode {
         */
         sleep(1000);
     }
+
+
 
     //Hmm i wonder wat this does
     private void lowerLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
@@ -476,6 +458,7 @@ public class redAutonBackdrop extends LinearOpMode {
     }
 
     //Hmm i wonder wat this does
+
     private void raiseRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -498,6 +481,7 @@ public class redAutonBackdrop extends LinearOpMode {
     }
 
     //Hmm i wonder wat this does
+
     private void lowerRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(-power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -625,6 +609,7 @@ public class redAutonBackdrop extends LinearOpMode {
     }
 
     //Hmm i wonder wat this does
+
     private void openGripper(){
         gripper.setPosition(0);
         sleep(1000);

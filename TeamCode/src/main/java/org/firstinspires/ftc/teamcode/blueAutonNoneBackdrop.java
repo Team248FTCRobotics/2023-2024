@@ -75,28 +75,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //-----------Other information
 //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
-//frank pls read all comments - ryan hooman
-//if you do not read the comments i will come for you - RYLAN CHINTADA
 // MEASUREMENTS ARE IN INCHES
-
-
-//-----------Stuff to do:
-//Check the static final double variables based on the robot parts.
-//Check setPosition() arguments/parameters at end of autonomous.
-//Check drive speed and turn speed.
-//Check all functions.
-//Code the autonoumous for the field, don't guess the position-- calculate it (144x144 inch field)
-//Fix any other errors. NOTE: WHEN INSPECTING PROJECT ERRORS, IGNORE THE 2 ANDROID ERRORS
 
 
 @Autonomous(name="blueAutonNoneBackdrop", group="Robot")
@@ -109,12 +88,15 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
     private DcMotor         rightFront  = null;
     private DcMotor         leftRear    = null;
     private DcMotor         rightRear   = null;
+
+
     private DcMotor         leftArm     = null;
     private DcMotor         rightArm    = null;
     private Servo           gripper     = null;
     //private DcMotor         intakeMotor = null;
 
     /* Other variables to initialize... */
+
     private ElapsedTime     runtime = new ElapsedTime();
     OpenCvInternalCamera theWebcam;
     hooSensing.SkystoneDeterminationPipeline pipeline;
@@ -132,11 +114,9 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.3;
+    static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.5;
-    static final double     SKIRT_SPEED             = 0.2;
-
-    //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
+    static final double     SKIRT_SPEED             = 0.5;
 
     @Override
     public void runOpMode() {
@@ -149,6 +129,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
         //Arm and Gripper
+
         leftArm = hardwareMap.get(DcMotor.class, "leftArm");
         rightArm = hardwareMap.get(DcMotor.class, "rightArm");
         gripper = hardwareMap.get(Servo.class, "gripper");
@@ -179,6 +160,8 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
             }
         });
 
+
+
         /*Setting Directions for movement based on encoders*/
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -193,8 +176,8 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Uncomment when testing arms
-        //rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Uncomment when testing arms
+        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -336,6 +319,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         //REACHED BACKDROP--
 
 
+        skirtRight(6, SKIRT_SPEED);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
+
 
     }
 
@@ -397,6 +384,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
+
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy())) {
@@ -425,12 +413,14 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
     }
 
     //function to get position of prop, uses .getAnalysis() in hooSensing
+
     private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
         // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
         return pipeline.getAnalysis();
     }
 
     //Hmm i wonder wat this does
+
     private void raiseLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         leftArm.setPower(power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -454,6 +444,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
     }
 
     //Hmm i wonder wat this does
+
     private void lowerLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         leftArm.setPower(-power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -475,7 +466,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
+
+
     //Hmm i wonder wat this does
+
     private void raiseRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -497,7 +491,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
+
+
     //Hmm i wonder wat this does
+
     private void lowerRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
         rightArm.setPower(-power);  // Set the power to a negative value for downward motion
         runtime.reset();
@@ -519,6 +516,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         */
         sleep(1000);
     }
+
 
     //move robot right without turning with encoder
     public void skirtRight(double distance, double power) {
@@ -572,6 +570,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
+
     //move robot left without turning with encoder
     public void skirtLeft(double distance, double power) {
         int newLeftFrontTarget;
@@ -624,6 +623,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
+
     //Hmm i wonder wat this does
     private void openGripper(){
         gripper.setPosition(0);
@@ -649,3 +649,5 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
 
 
 }
+
+

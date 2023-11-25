@@ -21,8 +21,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -40,7 +42,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * Detects the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
-@TeleOp
+@TeleOp(name="hooSensing", group="Robot")
+//@Disabled
 public class hooSensing extends LinearOpMode
 {
     OpenCvInternalCamera phoneCam;
@@ -90,7 +93,7 @@ public class hooSensing extends LinearOpMode
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.update();
 
-            // Don't burn CPU cycles busy-looping in this sample
+            // Don't burn CPU cycles busy-looping in this samplel'
             sleep(50);
         }
     }

@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.openftc.easyopencv.OpenCvInternalCamera;
@@ -100,13 +101,13 @@ public class hooAutonTesting extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: Yellow Jacket 435 RPM Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: Yellow Jacket 435 RPM Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing. //13.71 with gearing on 435 RPM YJ Encoder
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 1.0;
-   // static final double     TURN_SPEED              = 0.5;
+    static final double     DRIVE_SPEED             = 0.5;
+    // static final double     TURN_SPEED              = 0.5;
     // static final double     SKIRT_SPEED             = 0.2;
 
     //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
@@ -261,7 +262,7 @@ public class hooAutonTesting extends LinearOpMode {
         //----------DRIVE FOWARD/BACKWARD/TURN TEST
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         //* -timeout is the maximum amount of time for the robot to reach the position (NOT THE SAME AS SLEEP cuz timeout is a condition variable) -Ryan hoo
-        encoderDrive(DRIVE_SPEED,  30.48,  30.48, 10.0);  // S1: Forward 12 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  12.0,  12.0, 10.0);  // S1: Forward 12 Inches with 5 Sec timeout
         sleep(1000);
         //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //sleep(1000);
@@ -397,10 +398,10 @@ public class hooAutonTesting extends LinearOpMode {
     }
 
     //function to get position of prop, uses .getAnalysis() in hooSensing
-  //  private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
-        // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
+    //  private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
+    // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
     //    return pipeline.getAnalysis();
-   // }
+    // }
 
     //Hmm i wonder wat this does
     /*
@@ -412,7 +413,7 @@ public class hooAutonTesting extends LinearOpMode {
         }
         leftArm.setPower(0);      // Stop the motor
     */
-        //with encoders:
+    //with encoders:
         /*
         leftArm.setTargetPosition(targetPosition);
         lefttArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
