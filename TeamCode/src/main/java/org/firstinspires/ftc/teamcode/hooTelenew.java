@@ -23,6 +23,8 @@ public class hooTelenew extends LinearOpMode {
     DcMotor leftRear = null;
     DcMotor rightRear = null;
 
+    Servo planeLauncherServo = null;
+
     //gp2 declarations
 
 
@@ -40,17 +42,21 @@ public class hooTelenew extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        planeLauncherServo = hardwareMap.servo.get("planeLauncherServo");
+
+        planeLauncherServo.setPosition(0.0);
+
         leftFront = hardwareMap.dcMotor.get("leftFront"); //FrontLeft
         rightFront = hardwareMap.dcMotor.get("rightFront"); //FrontRight
         leftRear = hardwareMap.dcMotor.get("leftRear"); //BackLeft
         rightRear = hardwareMap.dcMotor.get("rightRear"); //BackRight
 
-
-
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
+
+        planeLauncherServo.setDirection(Servo.Direction.FORWARD);
 
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,6 +113,12 @@ public class hooTelenew extends LinearOpMode {
                 J -= .4; P -= .4; G -= .4; R -= .4;
             }
 
+            if (gamepad1.y) {
+                planeLauncherServo.setPosition(0.5);  // Adjust the position value as needed
+            } else {
+                planeLauncherServo.setPosition(0.0);  // Set to 0 when not activated
+            }
+
             //motor power limiter
             J = Math.max(-motorMax, Math.min(J, motorMax)); //FrontLeft
             P = Math.max(-motorMax, Math.min(P, motorMax)); //FrontRight
@@ -127,6 +139,8 @@ public class hooTelenew extends LinearOpMode {
             telemetry.addData("RF", "%.3f", P);
             telemetry.addData("LR", "%.3f", G);
             telemetry.addData("RR", "%.3f", R);
+
+            telemetry.addData("Launcher Position", planeLauncherServo.getPosition());
 
             telemetry.update();
 

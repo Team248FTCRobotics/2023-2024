@@ -128,7 +128,7 @@ public class blueParkBackdrop extends LinearOpMode {
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
         //ROBOT IS FACING INWARD TOWARDS PROP LINE
 
-        encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
+        encoderDrive(DRIVE_SPEED, 50, 50, 5.0);
 
 
     }
@@ -222,8 +222,8 @@ public class blueParkBackdrop extends LinearOpMode {
 
         // Determine new target positions
         newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
         newRightRearTarget = rightRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
 
         // Set target positions
@@ -273,10 +273,10 @@ public class blueParkBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Determine new target positions
-        newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
         newRightFrontTarget = rightFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
         newLeftRearTarget = leftRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -317,6 +317,109 @@ public class blueParkBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
+    public void turnRight(double degrees, double power) {
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int newRightRearTarget;
+
+        // Calculate the target positions for each motor
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+
+        // Set target positions
+        leftFront.setTargetPosition(newLeftFrontTarget);
+        rightFront.setTargetPosition(newRightFrontTarget);
+        leftRear.setTargetPosition(newLeftRearTarget);
+        rightRear.setTargetPosition(newRightRearTarget);
+
+        // Turn On RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set power
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftRear.setPower(power);
+        rightRear.setPower(-power);
+
+        // Wait until motors reach the target position
+        while (opModeIsActive() &&
+                (leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy())) {
+            telemetry.addData("Path", "Running to %7d : %7d", newLeftFrontTarget, newRightFrontTarget);
+            telemetry.update();
+        }
+
+        // Stop the motors
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(1000); // optional pause after each move
+    }
+
+    public void turnLeft(double degrees, double power) {
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int newRightRearTarget;
+
+        // Calculate the target positions for each motor
+        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+
+        // Set target positions
+        leftFront.setTargetPosition(newLeftFrontTarget);
+        rightFront.setTargetPosition(newRightFrontTarget);
+        leftRear.setTargetPosition(newLeftRearTarget);
+        rightRear.setTargetPosition(newRightRearTarget);
+
+        // Turn On RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set power
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftRear.setPower(power);
+        rightRear.setPower(-power);
+
+        // Wait until motors reach the target position
+        while (opModeIsActive() &&
+                (leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy())) {
+            telemetry.addData("Path", "Running to %7d : %7d", newLeftFrontTarget, newRightFrontTarget);
+            telemetry.update();
+        }
+
+        // Stop the motors
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(1000); // optional pause after each move
+    }
 
 
 

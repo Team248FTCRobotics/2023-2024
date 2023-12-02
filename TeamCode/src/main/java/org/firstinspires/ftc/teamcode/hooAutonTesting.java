@@ -249,7 +249,7 @@ public class hooAutonTesting extends LinearOpMode {
                 break;
 
             case RIGHT:
-                //write code here to do if prop is on center line
+                //write code here to do if prop is on right line
                 break;
         //Break statements to continue code
         }
