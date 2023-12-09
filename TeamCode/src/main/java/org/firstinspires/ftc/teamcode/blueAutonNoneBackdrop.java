@@ -49,6 +49,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 //hi guys ryan hoo here please read all the comments !!!!!
 
