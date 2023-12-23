@@ -35,7 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hooSensing.SkystoneDeterminationPipeline.SkystonePosition;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -46,9 +47,8 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
-import org.openftc.easyopencv.OpenCvPipeline;
-import com.qualcomm.robotcore.hardware.Servo;
+import org.openftc.easyopencv.OpenCvWebcam;
+
 
 //hi guys ryan hoo here please read all the comments !!!!!
 
@@ -77,9 +77,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
 // MEASUREMENTS ARE IN INCHES
 
-
 @Autonomous(name="redAutonBackdrop", group="Robot")
-@Disabled
+//@Disabled
 public class redAutonBackdrop extends LinearOpMode {
 
 
@@ -89,15 +88,12 @@ public class redAutonBackdrop extends LinearOpMode {
     private DcMotor         leftRear    = null;
     private DcMotor         rightRear   = null;
 
-    private DcMotor         leftArm     = null;
-    private DcMotor         rightArm    = null;
-    private Servo           gripper     = null;
     //private DcMotor         intakeMotor = null;
 
     /* Other variables to initialize... */
     private ElapsedTime     runtime = new ElapsedTime();
-    OpenCvInternalCamera theWebcam;
-    hooSensing.SkystoneDeterminationPipeline pipeline;
+    OpenCvWebcam webcam;
+    hooSensingRed.SkystoneDeterminationPipeline pipeline;
 
 
     /*Variables based on robot parts, adjust whenever a part is changed */
@@ -112,9 +108,8 @@ public class redAutonBackdrop extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.3;
-    static final double     TURN_SPEED              = 0.5;
-    static final double     SKIRT_SPEED             = 0.2;
+    static final double     DRIVE_SPEED             = 0.5;
+    static final double     SKIRT_SPEED             = 0.5;
 
     @Override
     public void runOpMode() {
@@ -126,37 +121,24 @@ public class redAutonBackdrop extends LinearOpMode {
         leftRear = hardwareMap.get(DcMotor.class, "leftRear");
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
-        //Arm and Gripper
-
-        leftArm = hardwareMap.get(DcMotor.class, "leftArm");
-        rightArm = hardwareMap.get(DcMotor.class, "rightArm");
-        gripper = hardwareMap.get(Servo.class, "gripper");
-
-        //Intake Motor
-        //intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-
         //Camera
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        theWebcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new hooSensing.SkystoneDeterminationPipeline();
-        theWebcam.setPipeline(pipeline);
-        theWebcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        theWebcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        pipeline = new hooSensingRed.SkystoneDeterminationPipeline();
+        webcam.setPipeline(pipeline);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
-            public void onOpened() {
-                theWebcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT); //upright, change for dif camera orientation
-
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT); //CHANGE THIS FOR CAMERA ORIENTATION
             }
 
-            //Error message for driver hub if camera fails.
             @Override
-            public void onError(int errorCode) {
-                telemetry.addLine("Camera failed");
-                telemetry.update();
-
-            }
+            public void onError(int errorCode) {}
         });
+
+        telemetry.update();
 
         /*Setting Directions for movement based on encoders*/
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -172,8 +154,7 @@ public class redAutonBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Uncomment when testing arms
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,129 +173,55 @@ public class redAutonBackdrop extends LinearOpMode {
         waitForStart();
 
 
-
-
-
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
         //ROBOT IS FACING INWARD TOWARDS PROP LINE
 
-        //Close Gripper
-        closeGripper();
 
-        //Drive Foward 12 inches
-        encoderDrive(DRIVE_SPEED, 12, 12, 5.0 );
+
+        sleep(200);
 
         //Sense Prop Position
-        hooSensing.SkystoneDeterminationPipeline.SkystonePosition skystonePosition = getSkystonePosition();
+        hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition skystonePosition = getSkystonePosition();
+        sleep(500);
         telemetry.addData("Skystone Position", skystonePosition);
+
+        sleep(1000);
+
+        skystonePosition = getSkystonePosition();
+        sleep(500);
+        telemetry.addData("Skystone Position", skystonePosition);
+
+
         telemetry.update();
 
-        //Drive Backward 6 inches to rotate robot
-        encoderDrive(DRIVE_SPEED, -6, -6, 5.0 );
-
-        //Turn right twice to rotate robot
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-
+        sleep(200);
 
         //Place Pixel on same Line as Prop
         switch (skystonePosition) {
             case LEFT:
-                //Skirt Left
-                skirtLeft(3, 0.3);
-
-                //Raise Both Arms
-                raiseLeftArm(1.0, 2.5);
-                raiseRightArm(1.0, 2.5);
-
-                //Open Gripper
-                openGripper();
-
-                //Close Gripper
-                closeGripper();
-
-                //Lower Both Arms
-                lowerLeftArm(1.0, 2.5);
-                lowerRightArm(1.0, 2.5);
-
-                //Skirt back to original position
-                skirtRight(3, 0.3);
+                encoderDrive(0.3, 10, 10, 5.0);
+                sleep(1000);
+                skirtRight(20, 0.5);
+                encoderDrive(0.3, 23, 23, 5.0);
+                encoderDrive(0.3, -13, -13, 5.0);
 
                 break;
             case CENTER:
-                //Move Foward 5 inches
-                encoderDrive(DRIVE_SPEED, 5, 5, 5.0);
-
-                //Raise Both Arms
-                raiseLeftArm(1.0, 2.5);
-                raiseRightArm(1.0, 2.5);
-
-                //Open Gripper
-                openGripper();
-
-                //Close Gripper
-                closeGripper();
-
-                //Lower Both Arms
-                lowerLeftArm(1.0, 2.5);
-                lowerRightArm(1.0, 2.5);
-
-                //Move Back to original position
-                encoderDrive(DRIVE_SPEED, -5, -5, 5.0);
+                encoderDrive(0.3, 43, 43, 5.0);
+                encoderDrive(0.3, -33, -33, 5.0);
 
                 break;
             case RIGHT:
-                //Skirt Right
-                skirtRight(3, 0.3);
-
-                //Raise Both Arms
-                raiseLeftArm(1.0, 2.5);
-                raiseRightArm(1.0, 2.5);
-
-                //Open Gripper
-                openGripper();
-
-                //Close Gripper
-                closeGripper();
-
-                //Lower Both Arms
-                lowerLeftArm(1.0, 2.5);
-                lowerRightArm(1.0, 2.5);
-
-                //Skirt back to original position
-                skirtLeft(3, 0.3);
+                encoderDrive(0.3, 10, 10, 5.0);
+                sleep(1000);
+                skirtRight(20, 0.5);
+                encoderDrive(0.3, 23, 23, 5.0);
+                sleep(1000);
+                turnRight(30, 0.5);
+                encoderDrive(0.3, 26, 26, 5.0);
 
                 break;
         }
-
-        //Turn right twice to rotate robot
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-
-        //Drive Backward 8 inches (To not collide with lines)
-        encoderDrive(DRIVE_SPEED, -8, -8, 5.0);
-
-        //Turn Right
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-
-        //Drive Foward 6 Inches
-        encoderDrive(DRIVE_SPEED, 6, 6, 3.0);
-
-        // Turn Left
-        encoderDrive(TURN_SPEED, -12, 12, 4.0);
-
-        //Drive Foward 6 Inches
-        encoderDrive(DRIVE_SPEED, 6, 6, 5.0);
-
-        //Turn Right
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
-
-        //Drive Foward 12 Inches
-        encoderDrive(DRIVE_SPEED, 12, 12, 5.0);
-
-        //REACHED BACKDROP--
-
-
 
     }
 
@@ -403,106 +310,14 @@ public class redAutonBackdrop extends LinearOpMode {
         }
     }
 
-    //function to get position of prop, uses .getAnalysis() in hooSensing
+    //function to get position of prop, uses .getAnalysis() in hooSensingRed
 
-    private hooSensing.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
+    private hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
         // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
         return pipeline.getAnalysis();
     }
 
     //Hmm i wonder wat this does
-    private void raiseLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
-        leftArm.setPower(power);  // Set the power to a negative value for downward motion
-        runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < time) {
-            // Wait for the specified duration
-        }
-        leftArm.setPower(0);      // Stop the motor
-
-        //with encoders:
-        /*
-        leftArm.setTargetPosition(targetPosition);
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftArm.setPower(power);
-        while (opModeisActive() && rightArm.isBusy()) {
-            // Wait for the arm to reach the target position
-        }
-        leftArm.setPower(0);
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-        sleep(1000);
-    }
-
-
-
-    //Hmm i wonder wat this does
-    private void lowerLeftArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
-        leftArm.setPower(-power);  // Set the power to a negative value for downward motion
-        runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < time) {
-            // Wait for the specified duration
-        }
-        leftArm.setPower(0);      // Stop the motor
-        //with encoders:
-        /*
-        leftArm.setTargetPosition(targetPosition);
-        lefttArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftArm.setPower(-power);
-        while (opModeisActive() && rightArm.isBusy()) {
-            // Wait for the arm to reach the target position
-        }
-        leftArm.setPower(0);
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-        sleep(1000);
-    }
-
-    //Hmm i wonder wat this does
-
-    private void raiseRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
-        rightArm.setPower(power);  // Set the power to a negative value for downward motion
-        runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < time) {
-            // Wait for the specified duration
-        }
-        rightArm.setPower(0);      // Stop the motor
-        //with encoders:
-        /*
-        rightArm.setTargetPosition(targetPosition);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setPower(power);
-        while (opModeisActive() && rightArm.isBusy()) {
-            // Wait for the arm to reach the target position
-        }
-        rightArm.setPower(0);
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-        sleep(1000);
-    }
-
-    //Hmm i wonder wat this does
-
-    private void lowerRightArm(double power, double time) { //, int targetPosition (add for encoders), remove double time
-        rightArm.setPower(-power);  // Set the power to a negative value for downward motion
-        runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < time) {
-            // Wait for the specified duration
-        }
-        rightArm.setPower(0);      // Stop the motor
-
-        //with encoders:
-        /*
-        rightArm.setTargetPosition(targetPosition);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setPower(-power);
-        while (opModeisActive() && rightArm.isBusy()) {
-            // Wait for the arm to reach the target position
-        }
-        rightArm.setPower(0);
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
-        sleep(1000);
-    }
 
     //move robot right without turning with encoder
     public void skirtRight(double distance, double power) {
@@ -513,8 +328,8 @@ public class redAutonBackdrop extends LinearOpMode {
 
         // Determine new target positions
         newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
         newRightRearTarget = rightRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
 
         // Set target positions
@@ -564,10 +379,10 @@ public class redAutonBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Determine new target positions
-        newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
         newRightFrontTarget = rightFront.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
         newLeftRearTarget = leftRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int) (-distance * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -608,29 +423,113 @@ public class redAutonBackdrop extends LinearOpMode {
         sleep(1000);
     }
 
-    //Hmm i wonder wat this does
+    public void turnRight(double degrees, double power) {
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int newRightRearTarget;
 
-    private void openGripper(){
-        gripper.setPosition(0);
-        sleep(1000);
+        // Calculate the target positions for each motor
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+
+        // Set target positions
+        leftFront.setTargetPosition(newLeftFrontTarget);
+        rightFront.setTargetPosition(newRightFrontTarget);
+        leftRear.setTargetPosition(newLeftRearTarget);
+        rightRear.setTargetPosition(newRightRearTarget);
+
+        // Turn On RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set power
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftRear.setPower(power);
+        rightRear.setPower(-power);
+
+        // Wait until motors reach the target position
+        while (opModeIsActive() &&
+                (leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy())) {
+            telemetry.addData("Path", "Running to %7d : %7d", newLeftFrontTarget, newRightFrontTarget);
+            telemetry.update();
+        }
+
+        // Stop the motors
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(1000); // optional pause after each move
     }
 
-    private void closeGripper() {
-        gripper.setPosition(1);
-        sleep(1000);
-    } //0.13
+    public void turnLeft(double degrees, double power) {
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int newRightRearTarget;
 
-    /*
-    //Method to start intake motor
-    private void startIntake() {
-        intakeMotor.setPower(1.0);
+        // Calculate the target positions for each motor
+        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+
+        // Set target positions
+        leftFront.setTargetPosition(newLeftFrontTarget);
+        rightFront.setTargetPosition(newRightFrontTarget);
+        leftRear.setTargetPosition(newLeftRearTarget);
+        rightRear.setTargetPosition(newRightRearTarget);
+
+        // Turn On RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set power
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftRear.setPower(power);
+        rightRear.setPower(-power);
+
+        // Wait until motors reach the target position
+        while (opModeIsActive() &&
+                (leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy())) {
+            telemetry.addData("Path", "Running to %7d : %7d", newLeftFrontTarget, newRightFrontTarget);
+            telemetry.update();
+        }
+
+        // Stop the motors
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(1000); // optional pause after each move
     }
 
-    //Method to stop intake motor
-    private void stopIntake() {
-        intakeMotor.setPower(0.0);
-    }
-    */
+
+
+
 
 
 }

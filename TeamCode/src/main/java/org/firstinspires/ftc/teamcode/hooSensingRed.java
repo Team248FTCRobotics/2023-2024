@@ -46,9 +46,9 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
  * Detects the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
-@TeleOp(name="hooSensing", group="Robot")
+@TeleOp(name="hooSensingRed", group="Robot")
 //@Disabled
-public class hooSensing extends LinearOpMode
+public class hooSensingRed extends LinearOpMode
 {
     OpenCvWebcam webcam;
     SkystoneDeterminationPipeline pipeline;
@@ -112,15 +112,15 @@ public class hooSensing extends LinearOpMode
         /*
          * Some color constants
          */
-        static final Scalar BLUE = new Scalar(0, 0, 255);
+        static final Scalar RED = new Scalar(255, 0, 0);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(109,98);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(181,98);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(7,82);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(147,60);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(223 + 63,85);
         static final int REGION_WIDTH = 20;
         static final int REGION_HEIGHT = 20;
 
@@ -178,7 +178,7 @@ public class hooSensing extends LinearOpMode
         void inputToCb(Mat input)
         {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 2);
+            Core.extractChannel(YCrCb, Cb, 1);
         }
 
         @Override
@@ -267,7 +267,7 @@ public class hooSensing extends LinearOpMode
                     input, // Buffer to draw on
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
+                    RED, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
             /*
@@ -278,7 +278,7 @@ public class hooSensing extends LinearOpMode
                     input, // Buffer to draw on
                     region2_pointA, // First point which defines the rectangle
                     region2_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
+                    RED, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
             /*
@@ -289,7 +289,7 @@ public class hooSensing extends LinearOpMode
                     input, // Buffer to draw on
                     region3_pointA, // First point which defines the rectangle
                     region3_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
+                    RED, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
 
@@ -316,7 +316,7 @@ public class hooSensing extends LinearOpMode
                         region1_pointA, // First point which defines the rectangle
                         region1_pointB, // Second point which defines the rectangle
                         GREEN, // The color the rectangle is drawn in
-                        -1); // Negative thickness means solid fill LOLLOLOLOL
+                        -1); // Negative thickness means solid fill
             }
             else if(max == avg2) // Was it from region 2?
             {

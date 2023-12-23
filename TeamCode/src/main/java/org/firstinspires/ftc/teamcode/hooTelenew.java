@@ -44,8 +44,6 @@ public class hooTelenew extends LinearOpMode {
 
         planeLauncherServo = hardwareMap.servo.get("planeLauncherServo");
 
-        planeLauncherServo.setPosition(0.0);
-
         leftFront = hardwareMap.dcMotor.get("leftFront"); //FrontLeft
         rightFront = hardwareMap.dcMotor.get("rightFront"); //FrontRight
         leftRear = hardwareMap.dcMotor.get("leftRear"); //BackLeft
@@ -114,9 +112,9 @@ public class hooTelenew extends LinearOpMode {
             }
 
             if (gamepad1.y) {
-                planeLauncherServo.setPosition(0.5);  // Adjust the position value as needed
+                planeLauncherServo.setPosition(0.7);  // Adjust the position value as needed
             } else {
-                planeLauncherServo.setPosition(0.0);  // Set to 0 when not activated
+                planeLauncherServo.setPosition(0.3);  // Set to 0 when not activated
             }
 
             //motor power limiter

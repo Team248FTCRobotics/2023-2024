@@ -30,14 +30,56 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name="blueParkBackdrop", group="Robot")
-@Disabled
-public class blueParkBackdrop extends LinearOpMode {
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
+
+
+//hi guys ryan hoo here please read all the comments !!!!!
+
+//-----------Program Information
+
+/*
+ * This OpMode illustrates the concept of driving a path based on encoder counts.
+ * The code is structured as a LinearOpMode
+ *
+ * The code REQUIRES that you DO have encoders on the wheels,
+ *   otherwise you would use: RobotAutoDriveByTime;
+ *
+ *  This code ALSO requires that the drive Motors have been configured such that a positive
+ *  power command moves them forward, and causes the encoders to count UP.
+ *
+ *  This method assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
+ *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
+ */
+
+
+//-----------Other information
+//FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
+// MEASUREMENTS ARE IN INCHES
+
+@Autonomous(name="chintadaTestingNewCPMR", group="Robot")
+//@Disabled
+public class chintadaTestingNewCPMR extends LinearOpMode {
 
 
     /* Initialize motors as variables.... */
@@ -46,8 +88,12 @@ public class blueParkBackdrop extends LinearOpMode {
     private DcMotor         leftRear    = null;
     private DcMotor         rightRear   = null;
 
-    private ElapsedTime     runtime = new ElapsedTime();
+    //private DcMotor         intakeMotor = null;
 
+    /* Other variables to initialize... */
+    private ElapsedTime     runtime = new ElapsedTime();
+    OpenCvWebcam webcam;
+    hooSensingRed.SkystoneDeterminationPipeline pipeline;
 
 
     /*Variables based on robot parts, adjust whenever a part is changed */
@@ -57,15 +103,13 @@ public class blueParkBackdrop extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: Yellow Jacket 435 RPM Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: Yellow Jacket 435 RPM Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing. //13.71 with gearing on 435 RPM YJ Encoder
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.5;
-    static final double     SKIRT_SPEED             = 0.5;
-
-    //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
+    //static final double     DRIVE_SPEED             = 0.5;
+    //static final double     SKIRT_SPEED             = 0.5;
 
     @Override
     public void runOpMode() {
@@ -77,7 +121,24 @@ public class blueParkBackdrop extends LinearOpMode {
         leftRear = hardwareMap.get(DcMotor.class, "leftRear");
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
+        //Camera
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        pipeline = new hooSensingRed.SkystoneDeterminationPipeline();
+        webcam.setPipeline(pipeline);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT); //CHANGE THIS FOR CAMERA ORIENTATION
+            }
 
+            @Override
+            public void onError(int errorCode) {}
+        });
+
+        telemetry.update();
 
         /*Setting Directions for movement based on encoders*/
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -92,6 +153,7 @@ public class blueParkBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -110,15 +172,72 @@ public class blueParkBackdrop extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
         //START OF AUTONOMOUS-----------------------------------------------------------------------------
         //ROBOT IS FACING INWARD TOWARDS PROP LINE
 
-        encoderDrive(DRIVE_SPEED, 50, 50, 5.0);
 
+
+        sleep(200);
+
+        //Sense Prop Position
+        hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition skystonePosition = getSkystonePosition();
+        sleep(500);
+        telemetry.addData("Skystone Position", skystonePosition);
+
+        sleep(1000);
+
+        skystonePosition = getSkystonePosition();
+        sleep(500);
+        telemetry.addData("Skystone Position", skystonePosition);
+
+
+        telemetry.update();
+
+        sleep(200);
+
+        //Place Pixel on same Line as Prop
+        switch (skystonePosition) {
+            case LEFT:
+                encoderDrive(0.3, 10, 10, 5.0);
+                sleep(1000);
+                skirtRight(12, 0.5);
+                encoderDrive(0.3, 17, 17, 5.0);
+                sleep(1000);
+                turnLeft(90, 0.5);
+                encoderDrive(0.3, 15.5, 15.5, 5.0);
+                encoderDrive(0.3,-41, -41, 5.0);
+                skirtLeft(24, 0.5);
+
+                break;
+
+            case CENTER:
+                encoderDrive(0.3, 32, 32, 5.0);
+                encoderDrive(0.3, -28, -28, 5.0);
+                sleep(1000);
+                skirtRight(36,0.5);
+
+                break;
+            case RIGHT:
+                encoderDrive(0.3, 10, 10, 5.0);
+                sleep(1000);
+                skirtRight(12, 0.5);
+                encoderDrive(0.3, 16, 16, 5.0);
+                encoderDrive(0.3, -22, -22, 5.0);
+                sleep(1000);
+                skirtRight(30, 0.5);
+
+                break;
+        }
 
     }
 
+
     //END OF AUTONOMOUS-----------------------------------------------------------------------------
+
+
+
+
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -197,6 +316,15 @@ public class blueParkBackdrop extends LinearOpMode {
             sleep(1000);   // optional pause after each move.
         }
     }
+
+    //function to get position of prop, uses .getAnalysis() in hooSensingRed
+
+    private hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition getSkystonePosition() {
+        // Call the pipeline's getAnalysis() method to obtain the latest Skystone position
+        return pipeline.getAnalysis();
+    }
+
+    //Hmm i wonder wat this does
 
     //move robot right without turning with encoder
     public void skirtRight(double distance, double power) {
@@ -309,10 +437,10 @@ public class blueParkBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Calculate the target positions for each motor
-        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -361,10 +489,10 @@ public class blueParkBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Calculate the target positions for each motor
-        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -405,6 +533,9 @@ public class blueParkBackdrop extends LinearOpMode {
 
         sleep(1000); // optional pause after each move
     }
+
+
+
 
 
 
