@@ -111,6 +111,7 @@ public class blueAutonBackdrop extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.2;
     static final double     SKIRT_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.2;
+    static final int        SLEEP_DEFAULT           = 500;  //milliseconds
 
 
     @Override
@@ -201,27 +202,27 @@ public class blueAutonBackdrop extends LinearOpMode {
         //Place Pixel on same Line as Prop
         switch (skystonePosition) {
             case LEFT:
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-                skirtLeft(14.5, SKIRT_SPEED);
-                encoderDrive(DRIVE_SPEED, 16, 16, 5.0);
-                encoderDrive(DRIVE_SPEED, -22, -22, 5.0);
-                skirtLeft(30, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0, SLEEP_DEFAULT);
+                skirtLeft(14.5, SKIRT_SPEED, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 16, 16, 5.0, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, -22, -22, 5.0, SLEEP_DEFAULT);
+                skirtLeft(30, SKIRT_SPEED, SLEEP_DEFAULT);
 
                 break;
             case CENTER:
-                encoderDrive(DRIVE_SPEED, 31, 31, 5.0);
-                encoderDrive(DRIVE_SPEED, -28, -28, 5.0);
-                skirtLeft(36, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 31, 31, 5.0, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, -28, -28, 5.0, SLEEP_DEFAULT);
+                skirtLeft(36, SKIRT_SPEED, SLEEP_DEFAULT);
 
                 break;
             case RIGHT:
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-                skirtLeft(12, SKIRT_SPEED);
-                encoderDrive(DRIVE_SPEED, 17, 17, 5.0);
-                turnRight(90, TURN_SPEED);
-                encoderDrive(DRIVE_SPEED, 15.5, 15.5, 5.0);
-                encoderDrive(DRIVE_SPEED,-41, -41, 5.0);
-                skirtRight(24, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0, SLEEP_DEFAULT);
+                skirtLeft(12, SKIRT_SPEED, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 17, 17, 5.0, SLEEP_DEFAULT);
+                turnRight(90, TURN_SPEED, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 15.5, 15.5, 5.0, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED,-41, -41, 5.0, SLEEP_DEFAULT);
+                skirtRight(24, SKIRT_SPEED, SLEEP_DEFAULT);
 
                 break;
         }
@@ -248,7 +249,7 @@ public class blueAutonBackdrop extends LinearOpMode {
      */
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
-                             double timeoutS) {
+                             double timeoutS, int SLEEP_TIME) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -309,7 +310,7 @@ public class blueAutonBackdrop extends LinearOpMode {
             leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(500);   // optional pause after each move.
+            sleep(SLEEP_TIME);   // optional pause after each move.
         }
     }
 
@@ -323,7 +324,7 @@ public class blueAutonBackdrop extends LinearOpMode {
     //Hmm i wonder wat this does
 
     //move robot right without turning with encoder
-    public void skirtRight(double distance, double power) {
+    public void skirtRight(double distance, double power, int SLEEP_TIME) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -371,11 +372,11 @@ public class blueAutonBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(500);
+        sleep(SLEEP_TIME);
     }
 
     //move robot left without turning with encoder
-    public void skirtLeft(double distance, double power) {
+    public void skirtLeft(double distance, double power, int SLEEP_TIME) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -423,10 +424,10 @@ public class blueAutonBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(500);
+        sleep(SLEEP_TIME);
     }
 
-    public void turnRight(double degrees, double power) {
+    public void turnRight(double degrees, double power, int SLEEP_TIME) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -475,10 +476,10 @@ public class blueAutonBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(500); // optional pause after each move
+        sleep(SLEEP_TIME); // optional pause after each move
     }
 
-    public void turnLeft(double degrees, double power) {
+    public void turnLeft(double degrees, double power, int SLEEP_TIME) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -527,7 +528,7 @@ public class blueAutonBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(500); // optional pause after each move
+        sleep(SLEEP_TIME); // optional pause after each move
     }
 
 
