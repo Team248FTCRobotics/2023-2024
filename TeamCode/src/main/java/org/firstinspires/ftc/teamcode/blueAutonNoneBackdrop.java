@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.hooSensingRed.SkystoneDeterminationPipeline.SkystonePosition;
+import org.firstinspires.ftc.teamcode.hooSensingBlue.SkystoneDeterminationPipeline.SkystonePosition;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -103,13 +103,14 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: Yellow Jacket 435 RPM Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: Yellow Jacket 435 RPM Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing. //13.71 with gearing on 435 RPM YJ Encoder
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.5;
-    static final double     SKIRT_SPEED             = 0.5;
+    static final double     DRIVE_SPEED             = 0.2;
+    static final double     SKIRT_SPEED             = 0.2;
+    static final double     TURN_SPEED              = 0.2;
 
     @Override
     public void runOpMode() {
@@ -200,28 +201,32 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         switch (skystonePosition) {
             case LEFT:
 
-                encoderDrive(0.3, 10, 10, 5.0);
-                sleep(1000);
-                skirtRight(20, 0.5);
-                encoderDrive(0.3, 23, 23, 5.0);
-                sleep(1000);
-                turnLeft(30, 0.5);
-                encoderDrive(0.3, 26, 26, 5.0);
-
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+                skirtRight(15, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 16, 16, 5.0);
+                turnLeft(90, TURN_SPEED);
+                encoderDrive(DRIVE_SPEED, 18.5, 18.5, 5.0);
+                encoderDrive(DRIVE_SPEED, -18.5, -18.5, 5.0);
+                skirtRight(32, SKIRT_SPEED);
+                encoderDrive(0.4, 102, 102, 8.0);
 
                 break;
             case CENTER:
-                encoderDrive(0.3, 43, 43, 5.0);
-                encoderDrive(0.3, -33, -33, 5.0);
-
+                encoderDrive(DRIVE_SPEED, 32.5, 32.5, 5.0);
+                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
+                skirtRight(19, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 34, 34,5.0);
+                skirtLeft(110, 0.4);
+                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
                 break;
             case RIGHT:
-
-                encoderDrive(0.3, 10, 10, 5.0);
-                sleep(1000);
-                skirtRight(20, 0.5);
-                encoderDrive(0.3, 23, 23, 5.0);
-                encoderDrive(0.3, -13, -13, 5.0);
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+                skirtRight(15, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 16, 16, 5.0);
+                encoderDrive(DRIVE_SPEED, -16, -16, 5.0);
+                skirtLeft(14, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 39, 39, 5.0);
+                skirtLeft(102, 0.4);
 
                 break;
         }
@@ -309,7 +314,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
             leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(1000);   // optional pause after each move.
+            sleep(500);   // optional pause after each move.
         }
     }
 
@@ -371,7 +376,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(1000);
+        sleep(500);
     }
 
     //move robot left without turning with encoder
@@ -423,7 +428,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(1000);
+        sleep(500);
     }
 
     public void turnRight(double degrees, double power) {
@@ -433,10 +438,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Calculate the target positions for each motor
-        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -475,7 +480,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(1000); // optional pause after each move
+        sleep(500); // optional pause after each move
     }
 
     public void turnLeft(double degrees, double power) {
@@ -485,10 +490,10 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         int newRightRearTarget;
 
         // Calculate the target positions for each motor
-        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
-        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees * COUNTS_PER_INCH);
-        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees * COUNTS_PER_INCH);
+        newLeftFrontTarget = leftFront.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFront.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
+        newLeftRearTarget = leftRear.getCurrentPosition() - (int)(degrees / 4 * COUNTS_PER_INCH);
+        newRightRearTarget = rightRear.getCurrentPosition() + (int)(degrees / 4 * COUNTS_PER_INCH);
 
         // Set target positions
         leftFront.setTargetPosition(newLeftFrontTarget);
@@ -527,7 +532,7 @@ public class blueAutonNoneBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(1000); // optional pause after each move
+        sleep(500); // optional pause after each move
     }
 
 

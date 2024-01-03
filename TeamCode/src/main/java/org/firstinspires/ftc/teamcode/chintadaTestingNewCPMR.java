@@ -78,7 +78,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 // MEASUREMENTS ARE IN INCHES
 
 @Autonomous(name="chintadaTestingNewCPMR", group="Robot")
-//@Disabled
+@Disabled
 public class chintadaTestingNewCPMR extends LinearOpMode {
 
 
