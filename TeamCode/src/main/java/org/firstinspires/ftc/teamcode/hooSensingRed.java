@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 /*
  * Detects the skystone when lined up with
- * the sample regions over the first 3 stones
+ * the sample regions over the first 3 stones.
  */
 @TeleOp(name="hooSensingRed", group="Robot")
 //@Disabled

@@ -234,7 +234,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
     }
 
 
-    //END OF AUTONOMOUS-----------------------------------------------------------------------------
+    //END OF AUTONOMOUS----------------------------------------------------------------------------
 
 
 

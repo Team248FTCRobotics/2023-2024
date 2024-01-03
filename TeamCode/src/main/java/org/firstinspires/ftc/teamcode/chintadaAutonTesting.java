@@ -77,9 +77,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 //FIELD IS 144x144 INCHES - READ THIS PLEASE - RYAN HOO
 // MEASUREMENTS ARE IN INCHES
 
-@Autonomous(name="chintadaTestingNewCPMR", group="Robot")
+@Autonomous(name="chintadaAutonTesting", group="Robot")
 @Disabled
-public class chintadaTestingNewCPMR extends LinearOpMode {
+public class chintadaAutonTesting extends LinearOpMode {
 
 
     /* Initialize motors as variables.... */
