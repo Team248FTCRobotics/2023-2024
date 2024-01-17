@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class hooTelenew extends LinearOpMode {
 
-    boolean armStay = false;
 
     //declarations and stuff
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,6 +21,8 @@ public class hooTelenew extends LinearOpMode {
     DcMotor rightFront = null;
     DcMotor leftRear = null;
     DcMotor rightRear = null;
+    DcMotor leftArm = null;
+    DcMotor rightArm = null;
 
     Servo planeLauncherServo = null;
 
@@ -36,7 +37,7 @@ public class hooTelenew extends LinearOpMode {
 
     // scalars
     double joyScale = 1.0;
-    double motorMax = 1.0; // limit motor power to this value for Andymark~ RUN_USING_ENCODER mode
+    double motorMax = 0.8; // limit motor power to this value for Andymark~ RUN_USING_ENCODER mode
 
 
     @Override
@@ -48,6 +49,9 @@ public class hooTelenew extends LinearOpMode {
         rightFront = hardwareMap.dcMotor.get("rightFront"); //FrontRight
         leftRear = hardwareMap.dcMotor.get("leftRear"); //BackLeft
         rightRear = hardwareMap.dcMotor.get("rightRear"); //BackRight
+        leftArm = hardwareMap.dcMotor.get("leftArm"); //BackRight
+       rightArm = hardwareMap.dcMotor.get("rightArm"); //BackRight
+
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -109,13 +113,12 @@ public class hooTelenew extends LinearOpMode {
             }
             if (gamepad1.dpad_down){
                 J -= .4; P -= .4; G -= .4; R -= .4;
+
             }
 
-            if (gamepad1.y) {
-                planeLauncherServo.setPosition(0.7);  // Adjust the position value as needed
-            } else {
-                planeLauncherServo.setPosition(0.3);  // Set to 0 when not activated
-            }
+
+
+
 
             //motor power limiter
             J = Math.max(-motorMax, Math.min(J, motorMax)); //FrontLeft
@@ -147,9 +150,33 @@ public class hooTelenew extends LinearOpMode {
 
 
 
+           if(gamepad2.left_stick_y > 0){
+                leftArm.setPower(1);
+                rightArm.setPower(-1);
+            } else if(gamepad2.left_stick_y < 0){
+                leftArm.setPower(-1);
+                rightArm.setPower(1);
+            } else if(gamepad2.right_stick_y > 0) {
+                leftArm.setPower(.3);
+                rightArm.setPower(-.3);
+            } else if(gamepad2.right_stick_y < 0){
+                leftArm.setPower(-.3);
+                rightArm.setPower(.3);
+            }
+            else{
+                leftArm.setPower(-.05);
+                rightArm.setPower(.05);
+            }
+            if (gamepad2.b) {
+                leftArm.setPower(.3);
+                rightArm.setPower(-.3);
+            }
 
-
-
+            if (gamepad2.y) {
+                planeLauncherServo.setPosition(0.7);  // Adjust the position value as needed
+            } else {
+                planeLauncherServo.setPosition(0.3);  // Set to 0 when not activated
+            }
 
 
 

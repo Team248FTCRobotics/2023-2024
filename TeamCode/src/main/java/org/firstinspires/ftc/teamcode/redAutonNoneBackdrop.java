@@ -103,7 +103,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: Yellow Jacket 435 RPM Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: Yellow Jacket 435 RPM Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing. //13.71 with gearing on 435 RPM YJ Encoder
     static final double     WHEEL_DIAMETER_INCHES   = 3.779 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -111,7 +111,6 @@ public class redAutonNoneBackdrop extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.2;
     static final double     SKIRT_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.2;
-    static final int        SLEEP_DEFAULT           = 500;
 
     @Override
     public void runOpMode() {
@@ -201,32 +200,32 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         //Place Pixel on same Line as Prop
         switch (skystonePosition) {
             case LEFT:
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0, SLEEP_DEFAULT);
-                skirtLeft(15, SKIRT_SPEED, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, 16, 16, 5.0, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, -16, -16, 5.0, SLEEP_DEFAULT);
-                skirtRight(14, SKIRT_SPEED, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, 39, 39, 5.0, SLEEP_DEFAULT);
-                skirtRight(102, 0.4, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+                skirtLeft(15, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 16, 16, 5.0);
+                encoderDrive(DRIVE_SPEED, -16, -16, 5.0);
+                skirtRight(14, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 39, 39, 5.0);
+                skirtRight(102, 0.4);
 
                 break;
             case CENTER:
-                encoderDrive(DRIVE_SPEED, 32.5, 32.5, 5.0, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, -10, -10, 5.0, SLEEP_DEFAULT);
-                skirtLeft(19, SKIRT_SPEED, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, 34, 34,5.0, SLEEP_DEFAULT);
-                skirtRight(110, 0.4, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, -10, -10, 5.0, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 32.5, 32.5, 5.0);
+                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
+                skirtLeft(19, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 34, 34,5.0);
+                skirtRight(110, 0.4);
+                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
                 break;
             case RIGHT:
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0, SLEEP_DEFAULT);
-                skirtLeft(15, SKIRT_SPEED, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, 16, 16, 5.0, SLEEP_DEFAULT);
-                turnRight(90, TURN_SPEED, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, 18.5, 18.5, 5.0, SLEEP_DEFAULT);
-                encoderDrive(DRIVE_SPEED, -18.5, -18.5, 5.0, SLEEP_DEFAULT);
-                skirtLeft(32, SKIRT_SPEED, SLEEP_DEFAULT);
-                encoderDrive(0.4, 102, 102, 8.0, SLEEP_DEFAULT);
+                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+                skirtLeft(15, SKIRT_SPEED);
+                encoderDrive(DRIVE_SPEED, 16, 16, 5.0);
+                turnRight(90, TURN_SPEED);
+                encoderDrive(DRIVE_SPEED, 18.5, 18.5, 5.0);
+                encoderDrive(DRIVE_SPEED, -18.5, -18.5, 5.0);
+                skirtLeft(32, SKIRT_SPEED);
+                encoderDrive(0.4, 102, 102, 8.0);
 
                 break;
         }
@@ -234,7 +233,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
     }
 
 
-    //END OF AUTONOMOUS----------------------------------------------------------------------------
+    //END OF AUTONOMOUS-----------------------------------------------------------------------------
 
 
 
@@ -253,7 +252,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
      */
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
-                             double timeoutS, int SLEEP_TIME) {
+                             double timeoutS) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -314,7 +313,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
             leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(SLEEP_TIME);   // optional pause after each move.
+            sleep(500);   // optional pause after each move.
         }
     }
 
@@ -328,7 +327,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
     //Hmm i wonder wat this does
 
     //move robot right without turning with encoder
-    public void skirtRight(double distance, double power, int SLEEP_TIME) {
+    public void skirtRight(double distance, double power) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -376,11 +375,11 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(SLEEP_TIME);
+        sleep(500);
     }
 
     //move robot left without turning with encoder
-    public void skirtLeft(double distance, double power, int SLEEP_TIME) {
+    public void skirtLeft(double distance, double power) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -428,10 +427,10 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(SLEEP_TIME);
+        sleep(500);
     }
 
-    public void turnRight(double degrees, double power, int SLEEP_TIME) {
+    public void turnRight(double degrees, double power) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -480,10 +479,10 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(SLEEP_TIME); // optional pause after each move
+        sleep(500); // optional pause after each move
     }
 
-    public void turnLeft(double degrees, double power, int SLEEP_TIME) {
+    public void turnLeft(double degrees, double power) {
         int newLeftFrontTarget;
         int newRightFrontTarget;
         int newLeftRearTarget;
@@ -532,7 +531,7 @@ public class redAutonNoneBackdrop extends LinearOpMode {
         leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sleep(SLEEP_TIME); // optional pause after each move
+        sleep(500); // optional pause after each move
     }
 
 
